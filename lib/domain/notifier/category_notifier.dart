@@ -1,16 +1,17 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todolist/domain/model/todo_category.dart';
 
-class CategoryNotifier extends StateNotifier<List<String>> {
-  CategoryNotifier() : super(['all']);
+class CategoryNotifier extends StateNotifier<List<TodoCategory>> {
+  CategoryNotifier() : super([]);
 
-  void add(String category) {
+  void add(TodoCategory category) {
     state = [
       ...state,
       category,
     ];
   }
 
-  void remove(String category) {
+  void remove(TodoCategory category) {
     state = [
       for (final item in state)
         if (item != category) item,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todolist/domain/model/todo_category.dart';
 import 'package:todolist/domain/model/todo.dart';
 import 'package:todolist/presentation/pages/todo_list_page.dart';
 import 'package:todolist/providers.dart';
@@ -39,10 +40,10 @@ class AddTodoDialog extends HookConsumerWidget {
       content: Column(
         children: [
           DropdownButton(
-            items: ref.watch(categoryProvider).map((category) {
+            items: ref.watch(categoryProvider).map((TodoCategory category) {
               return DropdownMenuItem(
                 value: category,
-                child: Text(category),
+                child: Text(category.name),
               );
             }).toList(),
             value: categoryValue.value,
@@ -76,13 +77,28 @@ class AddTodoDialog extends HookConsumerWidget {
 
 class MyHomePage extends HookConsumerWidget {
   const MyHomePage({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tabController =
+        useTabController(initialLength: 1 + ref.watch(categoryProvider).length);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todo List'),
-      ),
+          title: const Text('Todo List'),
+          bottom: TabBar(
+            controller: tabController,
+            tabs: [
+              const Tab(
+                text: 'All',
+                icon: Icon(Icons.all_inbox),
+              ),
+              ...ref.watch(categoryProvider).map((TodoCategory category) {
+                return Tab(
+                  text: category.name,
+                  icon: category.icon,
+                );
+              }),
+            ],
+          )),
       body: const TodoListPage(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
