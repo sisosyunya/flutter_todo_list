@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todolist/presentation/pages/todo_list_page.dart';
+import 'package:todolist/providers.dart';
 
 void main() {
   runApp(
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
@@ -74,7 +76,7 @@ class AddTodoDialog extends HookConsumerWidget {
 }
 
 class MyHomePage extends HookConsumerWidget {
-  MyHomePage({super.key});
+  const MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -82,7 +84,7 @@ class MyHomePage extends HookConsumerWidget {
       appBar: AppBar(
         title: const Text('Todo List'),
       ),
-      body: TodoList(),
+      body: const TodoListPage(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
@@ -94,96 +96,6 @@ class MyHomePage extends HookConsumerWidget {
         },
         child: const Icon(Icons.add),
       ),
-    );
-  }
-}
-
-final todoListProvider = StateNotifierProvider<TodoListNotifier, List<Todo>>(
-  (ref) => TodoListNotifier(),
-);
-
-final categoryProvider = StateNotifierProvider<CategoryNotifier, List<String>>(
-  (ref) => CategoryNotifier(),
-);
-
-class CategoryNotifier extends StateNotifier<List<String>> {
-  CategoryNotifier() : super(['all']);
-
-  void add(String category) {
-    state = [
-      ...state,
-      category,
-    ];
-  }
-
-  void remove(String category) {
-    state = [
-      for (final item in state)
-        if (item != category) item,
-    ];
-  }
-}
-
-class TodoListNotifier extends StateNotifier<List<Todo>> {
-  TodoListNotifier() : super([]);
-
-  void add(String title, String category) {
-    state = [
-      ...state,
-      Todo(
-        title: title,
-        category: category,
-      ),
-    ];
-  }
-
-  void toggle(Todo todo) {
-    state = [
-      for (final item in state)
-        if (item == todo)
-          Todo(
-            title: item.title,
-            isDone: !item.isDone,
-            category: item.category,
-          )
-        else
-          item,
-    ];
-  }
-}
-
-class Todo {
-  final String title;
-  final bool isDone;
-  final String category;
-
-  Todo({
-    required this.title,
-    this.isDone = false,
-    required this.category,
-  });
-}
-
-class TodoList extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final todoList = ref.watch(todoListProvider);
-    return ListView.builder(
-      itemCount: todoList.length,
-      itemBuilder: (context, index) {
-        final todo = todoList[index];
-        return ListTile(
-          onTap: () {
-            ref.read(todoListProvider.notifier).toggle(todo);
-          },
-          title: Text(
-            todo.title,
-            style: TextStyle(
-              decoration: todo.isDone ? TextDecoration.lineThrough : null,
-            ),
-          ),
-        );
-      },
     );
   }
 }
