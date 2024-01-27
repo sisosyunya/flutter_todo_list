@@ -1,16 +1,16 @@
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todolist/domain/model/todo.dart';
 
 class TodoListNotifier extends StateNotifier<List<Todo>> {
   TodoListNotifier() : super([]);
 
-  void add(String title, String category) {
+  void add(Todo todo) {
     state = [
       ...state,
       Todo(
-        title: title,
-        category: category,
+        title: todo.title,
+        isDone: todo.isDone,
+        category: todo.category,
       ),
     ];
   }

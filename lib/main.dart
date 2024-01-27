@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todolist/domain/model/todo.dart';
 import 'package:todolist/presentation/pages/todo_list_page.dart';
 import 'package:todolist/providers.dart';
 
@@ -35,7 +36,7 @@ class AddTodoDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _categoryValue = useState<String>('all');
+    final categoryValue = useState<String>('all');
     return AlertDialog(
       title: const Text('Add Todo'),
       content: Column(
@@ -47,9 +48,9 @@ class AddTodoDialog extends HookConsumerWidget {
                 child: Text(category),
               );
             }).toList(),
-            value: _categoryValue.value,
+            value: categoryValue.value,
             onChanged: (value) {
-              _categoryValue.value = value.toString();
+              categoryValue.value = value.toString();
             },
           ),
           Align(
@@ -63,9 +64,11 @@ class AddTodoDialog extends HookConsumerWidget {
       actions: [
         TextButton(
           onPressed: () {
-            ref
-                .read(todoListProvider.notifier)
-                .add(_todoController.text, _categoryValue.value);
+            ref.read(todoListProvider.notifier).add(
+              Todo(
+                  title: _todoController.text,
+                  category: categoryValue.value,
+                ));
             Navigator.pop(context);
           },
           child: const Text('Add'),
