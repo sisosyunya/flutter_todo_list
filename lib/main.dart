@@ -20,10 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.indigo),
       home: const MyHomePage(),
     );
   }
@@ -64,8 +61,7 @@ class AddTodoDialog extends HookConsumerWidget {
       actions: [
         TextButton(
           onPressed: () {
-            ref.read(todoListProvider.notifier).add(
-              Todo(
+            ref.read(todoListProvider.notifier).add(Todo(
                   title: _todoController.text,
                   category: categoryValue.value,
                 ));

@@ -28,4 +28,11 @@ class TodoListNotifier extends StateNotifier<List<Todo>> {
           item,
     ];
   }
+
+  void remove(Todo todo) {
+    state = [
+      for (final item in state)
+        if (item != todo) item,
+    ];
+  }
 }
